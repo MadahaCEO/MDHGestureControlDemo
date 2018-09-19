@@ -30,16 +30,16 @@
     
     self = [super init];
     if (self) {
-        self.targetView = view;
+        _targetView = view;
         
-        self.targetView.multipleTouchEnabled = YES;
+        _targetView.multipleTouchEnabled = YES;
         [self.singleTap requireGestureRecognizerToFail:self.doubleTap];
         [self.doubleTap requireGestureRecognizerToFail:self.panGR];
-        [self.targetView addGestureRecognizer:self.singleTap];
-        [self.targetView addGestureRecognizer:self.doubleTap];
-        [self.targetView addGestureRecognizer:self.panGR];
-        [self.targetView addGestureRecognizer:self.pinchGR];
-
+        [_targetView addGestureRecognizer:self.singleTap];
+        [_targetView addGestureRecognizer:self.doubleTap];
+        [_targetView addGestureRecognizer:self.panGR];
+        [_targetView addGestureRecognizer:self.pinchGR];
+        
     }
     return self;
 }
