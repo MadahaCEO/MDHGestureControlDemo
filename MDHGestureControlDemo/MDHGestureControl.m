@@ -14,7 +14,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGR;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGR;
-@property (nonatomic, assign) MDHPanDirection panDirection;
+@property (nonatomic, assign) MDHPanDimension panDimension;
 @property (nonatomic, assign) MDHPanLocation panLocation;
 @property (nonatomic, assign) MDHPanMovingDirection panMovingDirection;
 @property (nonatomic, weak)   UIView *targetView;
@@ -229,17 +229,17 @@
             CGFloat x = fabs(velocity.x);
             CGFloat y = fabs(velocity.y);
             if (x > y) {
-                self.panDirection = MDHPanDirectionHorizontal;
+                self.panDimension = MDHPanDimensionHorizontal;
             } else {
-                self.panDirection = MDHPanDirectionVertical;
+                self.panDimension = MDHPanDimensionVertical;
             }
             
-            if (self.startBlock) self.startBlock(self.panDirection, self.panLocation);
+            if (self.startBlock) self.startBlock(self.panDimension, self.panLocation);
         }
             break;
         case UIGestureRecognizerStateChanged: {
-            switch (_panDirection) {
-                case MDHPanDirectionHorizontal: {
+            switch (_panDimension) {
+                case MDHPanDimensionHorizontal: {
                     if (translate.x > 0) {
                         self.panMovingDirection = MDHPanMovingDirectionRight;
                         NSLog(@"滑动趋势 ==========手指 向右 滑动");
@@ -250,7 +250,7 @@
                     }
                 }
                     break;
-                case MDHPanDirectionVertical: {
+                case MDHPanDimensionVertical: {
                     if (translate.y > 0) {
                         self.panMovingDirection = MDHPanMovingDirectionBottom;
                         NSLog(@"滑动趋势 ==========手指 向下 滑动");
@@ -261,17 +261,17 @@
                     }
                 }
                     break;
-                case MDHPanDirectionUnknown:
+                case MDHPanDimensionUnknown:
                     break;
             }
-            if (self.movingBlock) self.movingBlock(self.panDirection, self.panLocation, velocity);
+            if (self.movingBlock) self.movingBlock(self.panDimension, self.panLocation, velocity);
             
         }
             break;
         case UIGestureRecognizerStateFailed:
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateEnded: {
-            if (self.finishedBlock) self.finishedBlock(self.panDirection, self.panLocation);
+            if (self.finishedBlock) self.finishedBlock(self.panDimension, self.panLocation);
         }
             break;
         default:

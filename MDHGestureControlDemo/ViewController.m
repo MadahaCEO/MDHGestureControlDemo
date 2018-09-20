@@ -87,23 +87,23 @@
         NSLog(@"方法调用 ==========双击==========一般处理暂停/播放");
     };
     
-    gestureControl.startBlock = ^(MDHPanDirection panDirection, MDHPanLocation panLocation) {
+    gestureControl.startBlock = ^(MDHPanDimension panDimension, MDHPanLocation panLocation) {
         
-        NSString *dimension = panDirection == MDHPanDirectionHorizontal ? @"《水平》" : @"《垂直》";
+        NSString *dimension = panDimension == MDHPanDimensionHorizontal ? @"《水平》" : @"《垂直》";
         NSString *area      = panLocation == MDHPanLocationLeft ? @"《左》" : @"屏幕区域《右》";
 
         NSLog(@"panStart ==========滑动方向纬度 %@==========手指接触屏幕区域 %@", dimension,area);
 
     };
     
-    gestureControl.movingBlock = ^(MDHPanDirection panDirection, MDHPanLocation panLocation, CGPoint velocity) {
+    gestureControl.movingBlock = ^(MDHPanDimension panDimension, MDHPanLocation panLocation, CGPoint velocity) {
        
         __strong typeof(weakSelf)strongSelf = weakSelf;
 
-        NSString *dimension = panDirection == MDHPanDirectionHorizontal ? @"《水平》" : @"《垂直》";
+        NSString *dimension = panDimension == MDHPanDimensionHorizontal ? @"《水平》" : @"《垂直》";
         NSString *area      = panLocation == MDHPanLocationLeft ? @"《左》" : @"屏幕区域《右》";
         
-        if (panDirection == MDHPanDirectionHorizontal) { /* 水平纬度拖动 */
+        if (panDimension == MDHPanDimensionHorizontal) { /* 水平纬度拖动 */
             
             // 每次滑动需要叠加时间
             strongSelf.sumTime += velocity.x / 200;
@@ -133,7 +133,7 @@
             
             NSLog(@"panMoving ==========准确滑动方向 %@==========手指接触屏幕区域 %@==========速率 %.1f", dimension,area,strongSelf.sumTime/totalMovieDuration);
 
-        } else if (panDirection == MDHPanDirectionVertical) { /* 垂直纬度拖动 */
+        } else if (panDimension == MDHPanDimensionVertical) { /* 垂直纬度拖动 */
             
             if (panLocation == MDHPanLocationLeft) { /// 调节亮度
                 
@@ -143,7 +143,7 @@
         }
     };
     
-    gestureControl.finishedBlock = ^(MDHPanDirection panDirection, MDHPanLocation panLocation) {
+    gestureControl.finishedBlock = ^(MDHPanDimension panDimension, MDHPanLocation panLocation) {
         __strong typeof(weakSelf)strongSelf = weakSelf;
 
         NSLog(@"滑动手势结束 ====================一般处理 按照当前选择的跳转时间 seekToTime播放 %.1f",strongSelf.sumTime);
@@ -155,7 +155,7 @@
     };
     
 //    gestureControl.disableTypes = MDHGestureTypeDoubleTap|MDHGestureDisableTypesPan;
-//    NSLog(@"++++++++++  %lu",(unsigned long)gestureControl.panDirection);
+//    NSLog(@"++++++++++  %lu",(unsigned long)gestureControl.panDimension);
 }
 
 

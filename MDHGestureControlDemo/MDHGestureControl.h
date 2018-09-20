@@ -20,14 +20,16 @@ typedef NS_ENUM(NSUInteger, MDHGestureType) {
     MDHGestureTypePinch       // 捏合
 };
 
+
 /*
- 手势滑动方向纬度
+ 手势滑动纬度
  */
-typedef NS_ENUM(NSUInteger, MDHPanDirection) {
-    MDHPanDirectionUnknown,      // 未知方向
-    MDHPanDirectionVertical,     // 垂直滑动
-    MDHPanDirectionHorizontal,   // 水平滑动
+typedef NS_ENUM(NSUInteger, MDHPanDimension) {
+    MDHPanDimensionUnknown,      // 未知方向
+    MDHPanDimensionVertical,     // 垂直滑动
+    MDHPanDimensionHorizontal,   // 水平滑动
 };
+
 
 /*
  手势滑动起始区域（手指接触屏幕时在左边区域 or 右边区域）
@@ -63,15 +65,14 @@ typedef NS_OPTIONS(NSUInteger, MDHGestureDisableTypes) {
 
 
 typedef void(^MDHGestureControlPinchBlock) (float scale);
-typedef void(^MDHGestureControlStartPanBlock) (MDHPanDirection panDirection, MDHPanLocation  panLocation);
-typedef void(^MDHGestureControlMovingPanBlock) (MDHPanDirection panDirection, MDHPanLocation  panLocation, CGPoint velocity);
-typedef void(^MDHGestureControlFinishedPanBlock) (MDHPanDirection panDirection, MDHPanLocation  panLocation);
+typedef void(^MDHGestureControlStartPanBlock) (MDHPanDimension panDimension, MDHPanLocation  panLocation);
+typedef void(^MDHGestureControlMovingPanBlock) (MDHPanDimension panDimension, MDHPanLocation  panLocation, CGPoint velocity);
+typedef void(^MDHGestureControlFinishedPanBlock) (MDHPanDimension panDimension, MDHPanLocation  panLocation);
+
 
 @interface MDHGestureControl : NSObject
 
 
-
-//@property (nonatomic, copy, nullable) BOOL(^triggerCondition)(ZFPlayerGestureControl *control, ZFPlayerGestureType type, UIGestureRecognizer *gesture, UITouch *touch);
 
 @property (nonatomic, copy) MDHGestureControlPinchBlock       pinchBlock;
 @property (nonatomic, copy) MDHGestureControlStartPanBlock    startBlock;
@@ -80,7 +81,7 @@ typedef void(^MDHGestureControlFinishedPanBlock) (MDHPanDirection panDirection, 
 @property (nonatomic, copy) dispatch_block_t singleTappedBlock;
 @property (nonatomic, copy) dispatch_block_t doubleTappedBlock;
 
-@property (nonatomic, assign, readonly) MDHPanDirection panDirection;
+@property (nonatomic, assign, readonly) MDHPanDimension panDimension;
 @property (nonatomic, assign, readonly) MDHPanLocation  panLocation;
 @property (nonatomic, assign, readonly) MDHPanMovingDirection panMovingDirection;
 @property (nonatomic, assign) MDHGestureDisableTypes disableTypes;
