@@ -33,6 +33,11 @@
         _targetView = view;
         
         _targetView.multipleTouchEnabled = YES;
+        
+        /*
+         requireGestureRecognizerToFail: A手势与其他手势建立一种关系: 如果其他手势的状态为Failed则会启用A手势动作。
+                                         (其他手势侦测失败就会调用A手势)
+         */
         [self.singleTap requireGestureRecognizerToFail:self.doubleTap];
         [self.doubleTap requireGestureRecognizerToFail:self.panGR];
         [_targetView addGestureRecognizer:self.singleTap];
@@ -69,8 +74,6 @@
  */
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
-    NSLog(@"获取手势类型 ==========");
-    
     MDHGestureType type = MDHGestureTypeUnknown;
     if (gestureRecognizer == self.singleTap) {
         
@@ -96,11 +99,11 @@
     CGPoint locationPoint = [touch locationInView:touch.view];
     if (locationPoint.x > _targetView.bounds.size.width / 2) {
         self.panLocation = MDHPanLocationRight;
-        NSLog(@"手指接触屏幕区域 ==========右");
+        NSLog(@"手指接触屏幕区域 ==========右==========一般处理 音量调节");
 
     } else {
         self.panLocation = MDHPanLocationLeft;
-        NSLog(@"手指接触屏幕区域 ==========左");
+        NSLog(@"手指接触屏幕区域 ==========左==========一般处理 亮度调节");
     }
     
     
@@ -141,7 +144,6 @@
             break;
     }
     
-//    NSLog(@"回调======");
 //    if (self.triggerCondition) return self.triggerCondition(self, type, gestureRecognizer, touch);
     return YES;
 }
@@ -211,16 +213,11 @@
 }
 
 - (void)handleSingleTap:(UITapGestureRecognizer *)tap {
-//    if (self.singleTapped) self.singleTapped(self);
-    NSLog(@"方法调用 ==========单击");
-    NSLog(@"回调**********单击");
-
+    if (self.singleTappedBlock) self.singleTappedBlock();
 }
 
 - (void)handleDoubleTap:(UITapGestureRecognizer *)tap {
-//    if (self.doubleTapped) self.doubleTapped(self);
-    NSLog(@"方法调用 ==========双击");
-    NSLog(@"回调**********双击");
+    if (self.doubleTappedBlock) self.doubleTappedBlock();
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)pan {
@@ -229,18 +226,15 @@
     switch (pan.state) {
         case UIGestureRecognizerStateBegan: {
             self.panMovingDirection = MDHPanMovingDirectionUnkown;
-            NSLog(@"滑动趋势 ==========未知");
             CGFloat x = fabs(velocity.x);
             CGFloat y = fabs(velocity.y);
             if (x > y) {
                 self.panDirection = MDHPanDirectionHorizontal;
-                NSLog(@"滑动方向纬度 ==========水平");
             } else {
                 self.panDirection = MDHPanDirectionVertical;
-                NSLog(@"滑动方向纬度 ==========垂直");
             }
             
-//            if (self.beganPan) self.beganPan(self, self.panDirection, self.panLocation);
+            if (self.startBlock) self.startBlock(self.panDirection, self.panLocation);
         }
             break;
         case UIGestureRecognizerStateChanged: {
@@ -253,7 +247,6 @@
                     } else if (translate.y < 0) {
                         self.panMovingDirection = MDHPanMovingDirectionLeft;
                         NSLog(@"滑动趋势 ==========手指 向左 滑动");
-
                     }
                 }
                     break;
@@ -265,26 +258,20 @@
                     } else {
                         self.panMovingDirection = MDHPanMovingDirectionTop;
                         NSLog(@"滑动趋势 ==========手指 向上 滑动");
-
                     }
                 }
                     break;
                 case MDHPanDirectionUnknown:
                     break;
             }
-//            if (self.changedPan) self.changedPan(self, self.panDirection, self.panLocation, velocity);
-            NSLog(@"回调**********滑动手势**********");
-
+            if (self.movingBlock) self.movingBlock(self.panDirection, self.panLocation, velocity);
+            
         }
             break;
         case UIGestureRecognizerStateFailed:
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateEnded: {
-//            if (self.endedPan) self.endedPan(self, self.panDirection, self.panLocation);
-            
-            NSLog(@"滑动手势结束 ==========");
-            NSLog(@"回调**********滑动手势结束");
-
+            if (self.finishedBlock) self.finishedBlock(self.panDirection, self.panLocation);
         }
             break;
         default:
@@ -296,10 +283,7 @@
 - (void)handlePinch:(UIPinchGestureRecognizer *)pinch {
     switch (pinch.state) {
         case UIGestureRecognizerStateEnded: {
-//            if (self.pinched) self.pinched(self, pinch.scale);
-            NSLog(@"捏合手势 ==========结束");
-            NSLog(@"回调**********捏合手势结束");
-
+            if (self.pinchBlock) self.pinchBlock(pinch.scale);
         }
             break;
         default:

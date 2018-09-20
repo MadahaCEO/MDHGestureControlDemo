@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, MDHGestureType) {
 };
 
 /*
- 手势滑动纬度
+ 手势滑动方向纬度
  */
 typedef NS_ENUM(NSUInteger, MDHPanDirection) {
     MDHPanDirectionUnknown,      // 未知方向
@@ -62,8 +62,23 @@ typedef NS_OPTIONS(NSUInteger, MDHGestureDisableTypes) {
 };
 
 
+typedef void(^MDHGestureControlPinchBlock) (float scale);
+typedef void(^MDHGestureControlStartPanBlock) (MDHPanDirection panDirection, MDHPanLocation  panLocation);
+typedef void(^MDHGestureControlMovingPanBlock) (MDHPanDirection panDirection, MDHPanLocation  panLocation, CGPoint velocity);
+typedef void(^MDHGestureControlFinishedPanBlock) (MDHPanDirection panDirection, MDHPanLocation  panLocation);
+
 @interface MDHGestureControl : NSObject
 
+
+
+//@property (nonatomic, copy, nullable) BOOL(^triggerCondition)(ZFPlayerGestureControl *control, ZFPlayerGestureType type, UIGestureRecognizer *gesture, UITouch *touch);
+
+@property (nonatomic, copy) MDHGestureControlPinchBlock       pinchBlock;
+@property (nonatomic, copy) MDHGestureControlStartPanBlock    startBlock;
+@property (nonatomic, copy) MDHGestureControlMovingPanBlock   movingBlock;
+@property (nonatomic, copy) MDHGestureControlFinishedPanBlock finishedBlock;
+@property (nonatomic, copy) dispatch_block_t singleTappedBlock;
+@property (nonatomic, copy) dispatch_block_t doubleTappedBlock;
 
 @property (nonatomic, assign, readonly) MDHPanDirection panDirection;
 @property (nonatomic, assign, readonly) MDHPanLocation  panLocation;
